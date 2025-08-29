@@ -55,7 +55,7 @@ public class Gun : MonoBehaviour
     {
         if (muzzleEffect != null)
             muzzleEffect.Play();
-       
+
         if (lineRenderer != null)
         {
             lineRenderer.enabled = true;
@@ -88,6 +88,5 @@ public class Gun : MonoBehaviour
 
         hitPosition = firePosition.position + firePosition.forward * fireDistance;
         StartCoroutine(CoShotEffect(hitPosition));
-
     }
 }
