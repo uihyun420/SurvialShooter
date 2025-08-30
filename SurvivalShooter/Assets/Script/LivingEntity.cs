@@ -9,22 +9,24 @@ public class LivingEntity : MonoBehaviour, IDamageable
 
     public event Action OnDeath;
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
         isDead = false;
         Health = maxHealth;
     }
-    public void Ondamage(float damage, Vector3 hiPoint, Vector3 hitNormal)
+    public virtual void Ondamage(float damage, Vector3 hiPoint, Vector3 hitNormal)
     {
+        Debug.Log($"{gameObject.name} Ondamage »£√‚µ , damage: {damage}");
         Health -= damage;
         if(Health <= 0)
         {
             Health = 0;
             Die();
+            Destroy(gameObject, 2f);           
         }
     }
 
-    public void Die()
+    public virtual void Die()
     {
         if(OnDeath!=null)
         {
