@@ -19,9 +19,15 @@ public class ZomHellephant : LivingEntity
     private Collider hellephantCollider;
     private AudioSource audioSource;
 
+    public AudioClip deathClip;
+    public AudioClip hurtClip;
+
+    public Ui ui;
+
     private Transform target;
     public float traceDistance;
     public float attackDistance;
+
 
     public float damage = 10f;
     public float lastAttackTime;
@@ -146,6 +152,8 @@ public class ZomHellephant : LivingEntity
     {
         CurrentStatus = Status.Die; // 상태를 Die로 변경(애니메이션 트리거 포함)
         base.Die();
+        audioSource.PlayOneShot(deathClip);
+        ui.AddScore(10);
     }
 
     public LayerMask targetLayer;
@@ -158,14 +166,15 @@ public class ZomHellephant : LivingEntity
             return null;
         }
 
-        var target = colliders.OrderBy(x => Vector3.Distance(x.transform.position, transform.position)).First();
-
-        return target.transform;
+        // "Player" 태그가 붙은 오브젝트만 타겟팅
+        var player = colliders.Select(x => x.transform).FirstOrDefault(t => t.GetComponent<PlayerInput>() != null);
+        return player;
     }
 
     public override void Ondamage(float damage, Vector3 hitPoint, Vector3 hitNormal)
     {
         base.Ondamage(damage, hitPoint, hitNormal);
+        audioSource.PlayOneShot(hurtClip);
         if (hitEffect != null)
         {
             hitEffect.transform.position = hitPoint;

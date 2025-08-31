@@ -27,6 +27,8 @@ public class PlayerInput : MonoBehaviour
 
     private void Update()
     {
+        if (Time.timeScale == 0f) return;
+
         float h = Input.GetAxis(horizontal);
         float v = Input.GetAxis(vertical);
 

@@ -35,6 +35,8 @@ public class Gun : MonoBehaviour
 
     private void Update()
     {
+        if (Time.timeScale == 0f) return;
+
         if (Input.GetMouseButton(0))
         {
             Fire();

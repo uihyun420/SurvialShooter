@@ -1,6 +1,7 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class ZomBear : LivingEntity
 {
@@ -17,6 +18,10 @@ public class ZomBear : LivingEntity
     private Animator animator;
     private Collider bunnyCollider;
     private AudioSource audioSource;
+    public Ui ui;
+
+    public AudioClip deathClip;
+    public AudioClip hurtClip;
 
     private Transform target;
     public float traceDistance;
@@ -143,6 +148,8 @@ public class ZomBear : LivingEntity
     {
         CurrentStatus = Status.Die; // 상태를 Die로 변경(애니메이션 트리거 포함)
         base.Die();
+        audioSource.PlayOneShot(deathClip);
+        ui.AddScore(10);
     }
     protected override void OnEnable()
     {
@@ -160,14 +167,15 @@ public class ZomBear : LivingEntity
             return null;
         }
 
-        var target = colliders.OrderBy(x => Vector3.Distance(x.transform.position, transform.position)).First();
-
-        return target.transform;
+        // "Player" 태그가 붙은 오브젝트만 타겟팅
+        var player = colliders.Select(x => x.transform).FirstOrDefault(t => t.GetComponent<PlayerInput>() != null);
+        return player;
     }
 
     public override void Ondamage(float damage, Vector3 hitPoint, Vector3 hitNormal)
     {
         base.Ondamage(damage, hitPoint, hitNormal);
+        audioSource.PlayOneShot(hurtClip);
         if (hitEffect != null)
         {
             hitEffect.transform.position = hitPoint;
